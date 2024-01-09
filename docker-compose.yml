@@ -1,0 +1,92 @@
+version: "3.8"
+
+name: "java_cyber_project"
+
+
+services:
+
+    backend_wsql:
+        container_name: "back_wsql"
+        build: "./backend_without_sql"
+        ports:
+            - "3001-3005:3000"
+        restart: always
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.2'
+                    memory: '256m'
+                reservations:
+                    cpus: '0.3'
+                    memory: '128m'
+            # replicas: 5
+
+
+
+    front_build_ng:
+        container_name: "nginx_ng"
+        build: "./front"
+        ports:
+            - "8080:80"
+        restart: always
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.05'
+                    memory: '128m'
+                reservations:
+                    cpus: '0.03'
+                    memory: '64m'
+
+
+
+    db_postgres:
+        container_name: "database_pgs"
+        volumes:
+          - "./backup_db_volume:/var/lib/postgresql/data"
+        build: "./db"
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_PASSWORD: "test1234"
+            POSTGRES_USER: "user1"
+        # image: postgres:latest
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.3'
+                    memory: '1024m'
+                reservations:
+                    cpus: '0.2'
+                    memory: '512m'
+
+
+
+    spring_wiki:
+        container_name: "spb_wiki"
+        build: "./springBoot"
+        restart: always
+        ports:
+          - "8888:8080"
+        environment:
+            SPRING_DATASOURCE_URL: "jdbc:postgresql://db_postgres:5432/wiki"
+            SPRING_DATASOURCE_USERNAME: "user1"
+            SPRING_DATASOURCE_PASSWORD: "test1234"
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.3'
+                    memory: '1024m'
+                reservations:
+                    cpus: '0.2'
+                    memory: '512m'
+
+
+# volmues:
+
+
+# networks:
+
+
+#docker compose -f "docker-compose.yml" up -d --build 

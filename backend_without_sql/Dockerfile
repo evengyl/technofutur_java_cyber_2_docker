@@ -13,4 +13,5 @@ EXPOSE 3000
 
 CMD ["npm", "start"]
 
-#docker build --pull --rm -f "backend\Dockerfile" -t java_cyber_back:latest "backend"
+#docker build -t java_cyber_back:v1 .
+#elle doit etre lancée depuis le folder ou ce situe le dockerfile !
